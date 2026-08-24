@@ -320,38 +320,54 @@ def confirmar_almoco():
             conn.close()
 
     return redirect("/status_aluno")
-
+# 📊 PAINEL DO GESTOR
 @app.route("/painel_gestor", methods=["GET", "POST"])
 @login_required
+@tipo_required("gestor")
 def painel_gestor():
     conn = conectar()
     cursor = conn.cursor()
 
     if request.method == "POST":
-        # Processa o cadastro ou a liberação manual do aluno
         acao = request.form.get("acao")
 
         if acao == "cadastrar_aluno":
-            nome = request.form.get("nome")
-            email = request.form.get("email")
-            curso = request.form.get("curso")
-            # Insere no banco...
-            cursor.execute(
-                "INSERT INTO alunos (nome, email, curso, almocou) VALUES (?, ?, ?, 0)",
-                (nome, email, curso),
-            )
-            conn.commit()
+            nome = request.form.get("nome", "").strip()
+            email = request.form.get("email", "").strip()
+            curso = request.form.get("curso", "").strip()
+            
+            # 🔑 Senha padrão definida automaticamente para o aluno conseguir logar
+            senha_padrao = "123456"
+
+            if nome and email:
+                codigo_qr = f"ALUNO_{uuid.uuid4().hex[:8].upper()}"
+                
+                cursor.execute(
+                    """
+                    INSERT INTO alunos (nome, email, curso, senha, codigo_qr, opcao_almoco, almocou)
+                    VALUES (?, ?, ?, ?, ?, 'nao_informado', 0)
+                    """,
+                    (nome, email, curso, senha_padrao, codigo_qr),
+                )
+                conn.commit()
 
         elif acao == "liberar_manual":
             aluno_id = request.form.get("aluno_id")
             cursor.execute(
-                "UPDATE alunos SET almocou = 1 WHERE id = ?", (aluno_id,)
+                "UPDATE alunos SET almocou = 1, opcao_almoco = 'escola' WHERE id = ?", 
+                (aluno_id,)
             )
             conn.commit()
 
         conn.close()
-        # 🚀 O REDIRECT Força a atualização da tela com a nova lista do banco
-        return redirect(url_for("painel_gestor"))
+        return redirect("/painel_gestor")
+
+    # Busca a lista atualizada de alunos
+    cursor.execute("SELECT id, nome, curso, almocou FROM alunos")
+    alunos = cursor.fetchall()
+    conn.close()
+
+    return render_template("painel_gestor.html", alunos=alunos)
 
     # Busca a lista atualizada
     cursor.execute("SELECT id, nome, curso, almocou FROM alunos")
