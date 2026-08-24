@@ -545,8 +545,8 @@ def logout():
     session.clear()
     return redirect("/")
 
+criar_gestor_padrao()
 
 if __name__ == '__main__':
-    criar_gestor_padrao()
     # Abre o servidor Flask aceitando conexões da rede local (host="0.0.0.0")
     app.run(host="0.0.0.0", port=5000, debug=True)
