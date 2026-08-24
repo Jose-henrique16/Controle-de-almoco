@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Painel do Gestor - Refeitório</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --primary: #000000;
+            --success-bg: #ECFDF5;
+            --success-text: #065F46;
+            --border: #E5E7EB;
+            --radius: 20px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #121212;
+                --card-bg: #1E1E1E;
+                --text-main: #F9FAFB;
+                --text-muted: #9CA3AF;
+                --primary: #FFFFFF;
+                --success-bg: #064E3B;
+                --success-text: #A7F3D0;
+                --border: #2D2D2D;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding: 20px 16px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .nav-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background-color: var(--card-bg);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .action-banner {
+            background-color: var(--primary);
+            color: var(--bg);
+            padding: 16px;
+            border-radius: var(--radius);
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            display: block;
+        }
+
+        .list-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+        }
+
+        .list-header {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .user-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .user-info {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .badge-pending {
+            background-color: var(--bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <div>
+                <h2>Painel do Gestor</h2>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Acompanhamento diário</p>
+            </div>
+            <div class="nav-btns">
+                <a href="/relatorio" class="btn-sm">Relatório</a>
+                <a href="/logout" class="btn-sm">Sair</a>
+            </div>
+        </header>
+
+        <a href="/escanear_qr" class="action-banner">
+            📷 Abrir Leitor de QR Code
+        </a>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>{{ almoçaram }}</h3>
+                <p>Almoçaram</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ vai_comer_escola }}</h3>
+                <p>Comem na Escola</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ vai_comer_fora }}</h3>
+                <p>Comem Fora</p>
+            </div>
+        </div>
+
+        <div class="list-card">
+            <div class="list-header">Lista de Usuários</div>
+            {% for u in alunos %}
+            <div class="user-item">
+                <div>
+                    <div class="user-name">{{ u[1] }}</div>
+                    <div class="user-info">{{ u[2] }}</div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    {% if u[3] == 1 %}
+                    <span class="badge badge-success">Liberado</span>
+                    {% else %}
+                    <span class="badge badge-pending">Pendente</span>
+                    <!-- Botão para liberar o aluno manualmente direto do painel -->
+                    <form action="/painel_gestor" method="POST" style="margin: 0;">
+                        <input type="hidden" name="acao" value="liberar_manual">
+                        <input type="hidden" name="aluno_id" value="{{ u[0] }}">
+                        <button type="submit" class="btn-sm"
+                            style="background-color: var(--primary); color: var(--bg); cursor: pointer;">
+                            Liberar
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center; padding: 12px 0;">
+                Nenhum aluno cadastrado.
+            </p>
+            {% endfor %}
+        </div>
+
+        <!-- 🚀 Atualização automática do Painel a cada 5 segundos -->
+        <script>
+            setInterval(() => {
+                // Recarrega o painel silenciosamente mantendo a lista atualizada com novos cadastros/liberações
+                fetch(window.location.href, { cache: 'no-store' })
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const novaLista = doc.querySelector('.list-card');
+                        const novaStats = doc.querySelector('.stats-grid');
+
+                        if (novaLista) document.querySelector('.list-card').innerHTML = novaLista.innerHTML;
+                        if (novaStats) document.querySelector('.stats-grid').innerHTML = novaStats.innerHTML;
+                    })
+                    .catch(err => console.error("Erro na atualização automática:", err));
+            }, 5000);
+        </script>
+    </div>
+
+</body>
+
+</html>

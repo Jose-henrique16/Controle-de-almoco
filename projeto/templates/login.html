@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Acesso - Passe de Refeitório</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --primary: #000000;
+            --primary-hover: #1F2937;
+            --danger-bg: #FEE2E2;
+            --danger-text: #991B1B;
+            --success-bg: #ECFDF5;
+            --success-text: #065F46;
+            --border: #E5E7EB;
+            --radius: 20px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #121212;
+                --card-bg: #1E1E1E;
+                --text-main: #F9FAFB;
+                --text-muted: #9CA3AF;
+                --primary: #FFFFFF;
+                --primary-hover: #E5E7EB;
+                --danger-bg: #7F1D1D;
+                --danger-text: #FCA5A5;
+                --success-bg: #064E3B;
+                --success-text: #A7F3D0;
+                --border: #2D2D2D;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 380px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .auth-header h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .auth-header p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .tabs {
+            display: flex;
+            background-color: var(--bg);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            background: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background-color: var(--bg);
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: var(--primary);
+            color: var(--bg);
+            margin-top: 8px;
+            transition: transform 0.15s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .alert-error {
+            background-color: var(--danger-bg);
+            color: var(--danger-text);
+        }
+
+        .alert-success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Passe de Refeitório</h1>
+            <p>Entre com seus dados para acessar</p>
+        </div>
+
+        {% if erro %}
+            <div class="alert alert-error">{{ erro }}</div>
+        {% endif %}
+
+        {% if sucesso %}
+            <div class="alert alert-success">{{ sucesso }}</div>
+        {% endif %}
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('login')">Entrar</button>
+            <button class="tab-btn" onclick="switchTab('cadastrar')">Cadastrar</button>
+        </div>
+
+        <!-- FORMULÁRIO DE LOGIN -->
+        <form id="form-login" action="/" method="POST">
+            <input type="hidden" name="acao" value="login">
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" name="email" class="form-control" placeholder="seu.email@escola.com" required>
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" name="senha" class="form-control" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn">Entrar</button>
+        </form>
+
+        <!-- FORMULÁRIO DE CADASTRO -->
+        <form id="form-cadastrar" action="/" method="POST" style="display: none;">
+            <input type="hidden" name="acao" value="cadastrar">
+            <div class="form-group">
+                <label>Nome Completo</label>
+                <input type="text" name="nome" class="form-control" placeholder="Seu nome" required>
+            </div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input type="email" name="email" class="form-control" placeholder="seu.email@escola.com" required>
+            </div>
+            <div class="form-group">
+                <label>Tipo de Conta</label>
+                <select name="tipo" id="select-tipo" class="form-control" onchange="toggleCamposTipo()">
+                    <option value="aluno">Aluno</option>
+                    <option value="professor">Professor</option>
+                </select>
+            </div>
+            <div class="form-group" id="campo-curso">
+                <label>Curso / Turma</label>
+                <input type="text" name="curso" class="form-control" placeholder="Ex: Informática 3º Ano">
+            </div>
+            <div class="form-group" id="campo-disciplina" style="display: none;">
+                <label>Disciplina</label>
+                <input type="text" name="disciplina" class="form-control" placeholder="Ex: Matemática">
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" name="senha" class="form-control" placeholder="••••••••" required>
+            </div>
+            <div class="form-group">
+                <label>Confirmar Senha</label>
+                <input type="password" name="confirmar_senha" class="form-control" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn">Criar Conta</button>
+        </form>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const btnLogin = document.querySelectorAll('.tab-btn')[0];
+            const btnCad = document.querySelectorAll('.tab-btn')[1];
+            const formLogin = document.getElementById('form-login');
+            const formCad = document.getElementById('form-cadastrar');
+
+            if (tab === 'login') {
+                btnLogin.classList.add('active');
+                btnCad.classList.remove('active');
+                formLogin.style.display = 'block';
+                formCad.style.display = 'none';
+            } else {
+                btnCad.classList.add('active');
+                btnLogin.classList.remove('active');
+                formCad.style.display = 'block';
+                formLogin.style.display = 'none';
+            }
+        }
+
+        function toggleCamposTipo() {
+            const tipo = document.getElementById('select-tipo').value;
+            document.getElementById('campo-curso').style.display = tipo === 'aluno' ? 'block' : 'none';
+            document.getElementById('campo-disciplina').style.display = tipo === 'professor' ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Escanear QR Code</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <style>
+        :root {
+            --bg: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --primary: #000000;
+            --border: #E5E7EB;
+            --radius: 20px;
+            
+            /* Status */
+            --success-bg: #ECFDF5;
+            --success-text: #065F46;
+            --success-border: #A7F3D0;
+            
+            --warning-bg: #FEF3C7;
+            --warning-text: #92400E;
+            --warning-border: #FDE68A;
+            
+            --danger-bg: #FEE2E2;
+            --danger-text: #991B1B;
+            --danger-border: #FCA5A5;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #121212;
+                --card-bg: #1E1E1E;
+                --text-main: #F9FAFB;
+                --text-muted: #9CA3AF;
+                --primary: #FFFFFF;
+                --border: #2D2D2D;
+
+                --success-bg: #064E3B;
+                --success-text: #A7F3D0;
+                --success-border: #047857;
+
+                --warning-bg: #78350F;
+                --warning-text: #FDE68A;
+                --warning-border: #B45309;
+
+                --danger-bg: #7F1D1D;
+                --danger-text: #FCA5A5;
+                --danger-border: #B91C1C;
+            }
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .menu {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: calc(env(safe-area-inset-top, 12px) + 12px) 16px 12px 16px;
+        }
+
+        .menu-links {
+            display: flex;
+            gap: 6px;
+        }
+
+        .menu a {
+            color: var(--text-main);
+            padding: 8px 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background-color: var(--card-bg);
+            transition: opacity 0.15s ease;
+        }
+
+        .menu a:active {
+            opacity: 0.7;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 12px 16px 24px 16px;
+        }
+
+        .card-scanner {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .card-scanner h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .card-scanner p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        #reader {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border) !important;
+            background-color: #000;
+        }
+
+        #reader video {
+            border-radius: 16px;
+            object-fit: cover;
+        }
+
+        #resultado {
+            margin-top: 16px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .verde { 
+            background-color: var(--success-bg); 
+            color: var(--success-text); 
+            border: 1px solid var(--success-border); 
+            display: block !important; 
+        }
+
+        .amarelo { 
+            background-color: var(--warning-bg); 
+            color: var(--warning-text); 
+            border: 1px solid var(--warning-border); 
+            display: block !important; 
+        }
+
+        .vermelho { 
+            background-color: var(--danger-bg); 
+            color: var(--danger-text); 
+            border: 1px solid var(--danger-border); 
+            display: block !important; 
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="menu">
+    <div class="menu-links">
+        <a href="/painel_gestor">Início</a>
+        <a href="/escanear_qr">📷 Escanear</a>
+        <a href="/relatorio">📊 Relatórios</a>
+    </div>
+    <a href="/logout">Sair 🚪</a>
+</div>
+
+<div class="container">
+    <div class="card-scanner">
+        <h2>Leitor de QR Code</h2>
+        <p>Aproxime o código da câmera para validar</p>
+        
+        <div id="reader"></div>
+        <div id="resultado"></div>
+    </div>
+</div>
+
+<script>
+    const html5QrCode = new Html5Qrcode("reader");
+
+    function processarScan(decodedText) {
+        html5QrCode.stop().then(() => {
+            fetch('/registrar_almoco', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ codigo: decodedText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resDiv = document.getElementById('resultado');
+                resDiv.innerText = data.mensagem;
+                resDiv.className = data.cor;
+                setTimeout(() => { location.reload(); }, 2500);
+            });
+        }).catch(err => console.error("Erro ao parar a câmera:", err));
+    }
+
+    html5QrCode.start(
+        { facingMode: "environment" }, 
+        { fps: 10, qrbox: { width: 220, height: 220 } },
+        processarScan
+    ).catch(err => {
+        console.error("Erro ao abrir a câmera traseira:", err);
+    });
+</script>
+
+</body>
+</html>

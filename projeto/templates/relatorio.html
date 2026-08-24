@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .menu {
+            background-color: #333;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+        }
+        .menu a {
+            color: white;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .menu a:hover { background-color: #555; }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e9ecef; }
+        th { background-color: #f8f9fa; color: #495057; }
+    </style>
+</head>
+<body>
+
+<div class="menu">
+    <div>
+        <a href="/painel_gestor">Início</a>
+        <a href="/escanear_qr">📷 Escanear QR</a>
+        <a href="/relatorio">📊 Relatórios</a>
+    </div>
+    <a href="/logout">Sair 🚪</a>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h2>Estatísticas por Curso</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Curso</th>
+                    <th>Total de Alunos</th>
+                    <th>Almoçaram Hoje</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in estatisticas %}
+                <tr>
+                    <td>{{ item[0] }}</td>
+                    <td>{{ item[1] }}</td>
+                    <td><strong style="color: #28a745;">{{ item[2] }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

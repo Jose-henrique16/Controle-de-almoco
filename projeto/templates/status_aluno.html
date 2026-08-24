@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Passe de Refeitório</title>
+
+    <!-- Configurações para Web App / PWA -->
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+
+    <!-- Fonte Limpa (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --primary: #000000;
+            --primary-hover: #1F2937;
+            --success-bg: #ECFDF5;
+            --success-text: #065F46;
+            --border: #E5E7EB;
+            --radius: 20px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #121212;
+                --card-bg: #1E1E1E;
+                --text-main: #F9FAFB;
+                --text-muted: #9CA3AF;
+                --primary: #FFFFFF;
+                --primary-hover: #E5E7EB;
+                --success-bg: #064E3B;
+                --success-text: #A7F3D0;
+                --border: #2D2D2D;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 380px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Cabeçalho Superior */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 4px;
+        }
+
+        .user-info h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .user-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .logout-btn {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+
+        .logout-btn:active {
+            background: var(--border);
+        }
+
+        /* Cartão Principal do Passe */
+        .pass-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .pass-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* Área do QR Code */
+        .qr-frame {
+            background-color: #FFFFFF;
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: inline-block;
+            margin-bottom: 16px;
+            transition: transform 0.2s ease;
+        }
+
+        .qr-frame:active {
+            transform: scale(1.03);
+        }
+
+        .qr-frame img {
+            width: 180px;
+            height: 180px;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .qr-hint {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Status de Almoçado */
+        .status-confirmed {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            padding: 20px;
+            border-radius: 16px;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        .status-confirmed h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .status-confirmed p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        /* Ações / Botões */
+        .actions-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--bg);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- Cabeçalho -->
+        <header class="app-header">
+            <div class="user-info">
+                <h2>Olá, {{ session['user_nome'] if 'user_nome' in session else 'Usuário' }}</h2>
+                <p>Acesso ao Refeitório ({{ curso }})</p>
+            </div>
+            <a href="/logout" class="logout-btn">Sair</a>
+        </header>
+
+        <!-- Cartão do Passe com QR Code -->
+        <main class="pass-card">
+            <span class="pass-title">Passe de Refeição</span>
+
+            {% if almocou == 1 %}
+            <div class="status-confirmed">
+                <h3>🍽️ Almoço Confirmado</h3>
+                <p>Você já utilizou seu passe hoje. Bom apetite!</p>
+            </div>
+            {% else %}
+            <div class="qr-frame">
+                <!-- Correção no atributo src para evitar barras duplicadas -->
+                <img src="{{ qr }}" alt="QR Code de Acesso">
+            </div>
+            <p class="qr-hint">Apresente este QR Code no leitor da fila para liberar seu acesso.</p>
+            {% endif %}
+        </main>
+
+        <!-- Botões de Ação Interativos -->
+        {% if almocou != 1 %}
+        <section class="actions-card">
+            <form action="/confirmar_almoco" method="POST" onsubmit="handleConfirm(event)">
+                <button type="submit" class="btn btn-primary" id="btn-confirmar">
+                    Confirmar Presença Manual
+                </button>
+            </form>
+        </section>
+        {% endif %}
+
+    </div>
+
+    <script>
+        // Registro do Service Worker PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(() => console.log('PWA Ativo'))
+                .catch(err => console.error('Erro PWA:', err));
+        }
+
+        // Feedback visual ao confirmar presença manual
+        function handleConfirm(event) {
+            const btn = document.getElementById('btn-confirmar');
+            btn.disabled = true;
+            btn.style.transform = 'scale(0.95)';
+            btn.innerHTML = '<span>Confirmando...</span>';
+        }
+
+        // 🚀 VERIFICAÇÃO EM TEMPO REAL (POLLING)
+        // Se a tela ainda estiver mostrando o QR Code, checa a cada 2.5 segundos
+        // 🚀 CHECAGEM EM TEMPO REAL
+        (function iniciarMonitoramento() {
+            // Converte o valor do Jinja para um número JavaScript puro
+            const almocou = Number("{{ almocou }}") || 0;
+
+            // Se já almoçou, não precisa rodar o temporizador
+            if (almocou === 1) return;
+
+            setInterval(async () => {
+                try {
+                    const response = await fetch('/api/checar_status?_t=' + new Date().getTime());
+                    if (!response.ok) return;
+
+                    const data = await response.json();
+
+                    if (data.almocou === 1) {
+                        window.location.reload();
+                    }
+                } catch (err) {
+                    console.error("Erro ao verificar status:", err);
+                }
+            }, 2500);
+        })();
+    </script>
+</body>
+
+</html>
